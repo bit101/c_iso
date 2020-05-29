@@ -2,7 +2,7 @@
 #include "bitlib.h"
 #include <gtk/gtk.h>
 
-double size = 30;
+double size = 10;
 
 isobox *new_isobox(double x, double y, double z, double width, double depth,
                    double height) {
