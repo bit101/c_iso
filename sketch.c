@@ -31,46 +31,24 @@ bl_render_config setup() {
 extern double size;
 
 void render(cairo_t *cr, double percent) {
-  size = 10;
+  size = 20;
   cairo_clear_rgb(cr, 1, 0, 0);
   cairo_set_line_width(cr, 0.5);
   cairo_translate(cr, width * 0.5, height * 0.5);
   cairo_line(cr, -width / 2, 0, width / 2, 0);
   double scale = 0.09;
-  /* draw_cube(cr, -1, 0, 1); */
-  /* draw_cube(cr, 0, -1, 1); */
-  /* draw_cube(cr, 1, -1, 0); */
-  /* draw_cube(cr, 1, -1, 1); */
-  /* draw_cube(cr, 0, 0, 0); */
-  /* draw_cube(cr, 1, 0, 0); */
-  /* draw_cube(cr, 1, 0, 2); */
-  /* draw_cube(cr, 1, 0, 3); */
-  /* draw_cube(cr, 1, 1, 4); */
-  /* draw_cube(cr, 1, 1, 2); */
-  /* draw_cube(cr, 1, 0, 1); */
+  /* draw_box(cr, 100, 0, 0, 50, 50, 50); */
 
-  /* draw_cube(cr, 1, 0, 0); */
-  /* draw_box(cr, 100, 100, 0, 100, 100, 100); */
-  /* draw_box(cr, 200, 0, 0, 100, 100, 100); */
-  /* draw_box(cr, 200, 0, 100, 100, 100, 100); */
-  /* cairo_translate(cr, 200, 0); */
-  /* draw_box(cr, 0, 0, 0, 10, 300, 100); */
-
-  draw_box(cr, 0, 0, 0, 50, 200, 50);
-  draw_box(cr, 50, 0, 0, 50, 100, 50);
-  draw_box(cr, 100, 0, 0, 50, 50, 50);
-  draw_box(cr, 12.5, 12.5, 50, 25, 25, 50);
-  /* for (int z = 0; z < 20; z++) { */
-  /*   for (int x = 0; x < 20; x++) { */
-  /*     for (int y = 0; y < 20; y++) { */
-  /*       /1* if (bl_perlin_3(x * scale, y * scale, *1/ */
-  /*       /1* z * scale + bl_lerp_sin(percent, 0, 1)) > 0.0) { *1/ */
-  /*       /1* if (g_random_boolean()) { *1/ */
-  /*       draw_cube(cr, x, y, z + 22); */
-  /*       /1* } *1/ */
-  /*       /1* } *1/ */
-  /*     } */
-  /*   } */
-  /* cairo_translate(cr, 400, 0); */
-  /* } */
+  for (int z = 0; z < 20; z++) {
+    for (int x = 0; x < 20; x++) {
+      for (int y = 0; y < 20; y++) {
+        /* if (bl_perlin_3(x * scale, y * scale, */
+        /* z * scale + bl_lerp_sin(percent, 0, 1)) > 0.0) { */
+        if (g_random_boolean()) {
+          draw_cube(cr, x, y, z);
+        }
+        /* } */
+      }
+    }
+  }
 }
