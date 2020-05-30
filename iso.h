@@ -13,6 +13,8 @@ typedef struct _isobox {
 
 isobox *new_isobox(double x, double y, double z, double width, double height,
                    double depth);
-void draw_box(cairo_t *cr, double x, double y, double z, double h);
+void draw_box(cairo_t *cr, double x, double y, double z, double width,
+              double depth, double height);
+void draw_cube(cairo_t *cr, double x, double y, double z);
 
 #endif
