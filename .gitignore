@@ -3,6 +3,6 @@ bitlib_c_frames
 build
 dist
 *.o
-*.png
-*.gif
-*.mp4
+out.png
+out.gif
+out.mp4

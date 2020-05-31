@@ -12,7 +12,7 @@ enum bl_render_mode mode;
 
 bl_render_config setup() {
   // IMAGE, GIF, VIDEO, SMALL_VIDEO
-  mode = IMAGE;
+  mode = GIF;
 
   // width, height, frames (fps*seconds), fps
   bl_render_config configs[4] = {
@@ -31,7 +31,7 @@ bl_render_config setup() {
 void render(cairo_t* cr, double percent) {
   double scale      = 0.1;
   double box_size   = 10;
-  double world_size = 30;
+  double world_size = 20;
   double hue;
   bool green;
   double offset;
