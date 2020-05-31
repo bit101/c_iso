@@ -12,9 +12,9 @@ extern void render(cairo_t* cr, double percent);
 int main(int argc, char** argv) {
   char* out_name;
   bl_render_config config = setup();
-  int num_threads         = 4;
+  int num_threads = 4;
 
-  width  = config.width;
+  width = config.width;
   height = config.height;
 
   switch (mode) {

@@ -72,11 +72,11 @@ void draw_top(cairo_t* cr, box_model box, surface_renderer renderer, void* rende
 }
 
 void init_box(box_model* box, double x, double y, double z, double w, double d, double h) {
-  box->x      = x;
-  box->y      = y;
-  box->z      = z;
-  box->width  = w;
-  box->depth  = d;
+  box->x = x;
+  box->y = y;
+  box->z = z;
+  box->width = w;
+  box->depth = d;
   box->height = h;
 }
 
@@ -87,14 +87,14 @@ void position_box(box_model* box, double x, double y, double z) {
 }
 
 void size_box(box_model* box, double w, double d, double h) {
-  box->width  = w;
-  box->depth  = d;
+  box->width = w;
+  box->depth = d;
   box->height = h;
 }
 
 void cube_box(box_model* box, double size) {
-  box->width  = size;
-  box->depth  = size;
+  box->width = size;
+  box->depth = size;
   box->height = size;
 }
 

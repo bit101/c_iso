@@ -29,8 +29,8 @@ bl_render_config setup() {
 ////////////////////////////////////////
 
 void render(cairo_t* cr, double percent) {
-  double scale      = 0.1;
-  double box_size   = 10;
+  double scale = 0.1;
+  double box_size = 10;
   double world_size = 35;
   double hue;
   bool green;
@@ -46,8 +46,8 @@ void render(cairo_t* cr, double percent) {
     for (int x = 0; x < world_size; x++) {
       for (int y = 0; y < world_size; y++) {
         offset = bl_lerp_sin(percent, 0, 19);
-        green  = bl_perlin_3(x * scale, y * scale, z * scale + offset) > 0.0;
-        hue    = green ? 120 : 240;
+        green = bl_perlin_3(x * scale, y * scale, z * scale + offset) > 0.0;
+        hue = green ? 120 : 240;
 
         position_box(&box, x * box_size, y * box_size, z * box_size);
         draw_box(cr, box, hsv, &hue);
