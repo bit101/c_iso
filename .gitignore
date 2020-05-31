@@ -1,5 +1,7 @@
 main
 bitlib_c_frames
+build
+dist
 *.o
 *.png
 *.gif
