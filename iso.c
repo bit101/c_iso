@@ -1,108 +1,110 @@
 #include "iso.h"
-#include "bitlib.h"
 #include <gtk/gtk.h>
+#include <pthread.h>
+#include "bitlib.h"
 
 const double sin_60 = sin(G_PI / 3);
 const double cos_60 = cos(G_PI / 3);
 const double tan_30 = tan(G_PI / 6);
 
-void flat(cairo_t *cr, double x, double y, double w, double h, double val) {
+////////////////////
+// render rect
+////////////////////
+void flat(cairo_t* cr, rect r, double val, void* render_data) {
   cairo_set_source_grey(cr, val);
-  cairo_fill_rectangle(cr, x, y, w, h);
+  cairo_fill_rectangle(cr, r.x, r.y, r.w, r.h);
 }
 
-void hsv(cairo_t *cr, double x, double y, double w, double h, double val) {
+void hsv(cairo_t* cr, rect r, double val, void* render_data) {
+  double hue = *(double*)render_data;
   cairo_set_source_hsv(cr, hue, 1, val);
-  cairo_fill_rectangle(cr, x, y, w, h);
+  cairo_fill_rectangle(cr, r.x, r.y, r.w, r.h);
 }
 
-void noise_rectangle(cairo_t *cr, double x, double y, double w, double h,
-                     double val) {
-  for (double yy = y; yy < y + h; yy++) {
-    for (double xx = x; xx < x + w; xx++) {
-      cairo_set_source_color(cr,
-                             bl_color_random_grey_range(val - 0.2, val + 0.2));
+void noise(cairo_t* cr, rect r, double val, void* render_data) {
+  for (double yy = r.y; yy < r.y + r.h; yy++) {
+    for (double xx = r.x; xx < r.x + r.w; xx++) {
+      cairo_set_source_color(cr, bl_color_random_grey_range(val - 0.2, val + 0.2));
       cairo_fill_rectangle(cr, xx, yy, 1, 1);
     }
   }
 }
 
-void draw_left(cairo_t *cr, double w, double d, double h) {
+////////////////////
+// surfaces
+////////////////////
+void draw_left(cairo_t* cr, box_model box, surface_renderer renderer, void* render_data) {
   cairo_matrix_t matrix;
-  double x = -w * sin_60;
-  double y = d - h;
-  double width = -x;
-  double height = h;
   cairo_matrix_init(&matrix, 1, tan_30, 0, 1, 0, 0);
 
+  rect r = {-box.width * sin_60, box.depth - box.height, box.width * sin_60, box.height};
+
   cairo_save(cr);
-  cairo_set_source_grey(cr, 0.2);
   cairo_transform(cr, &matrix);
-  rect_func(cr, x, y, width, height, 0.2);
+  renderer(cr, r, 0.2, render_data);
   cairo_restore(cr);
 }
 
-void draw_right(cairo_t *cr, double w, double d, double h) {
+void draw_right(cairo_t* cr, box_model box, surface_renderer renderer, void* render_data) {
   cairo_matrix_t matrix;
-  double x = 0;
-  double y = d - h;
-  double width = d * sin_60;
-  double height = h;
   cairo_matrix_init(&matrix, 1, -tan_30, 0, 1, 0, 0);
 
+  rect r = {0, box.depth - box.height, box.depth * sin_60, box.height};
+
   cairo_save(cr);
-  cairo_set_source_grey(cr, 0.5);
   cairo_transform(cr, &matrix);
-  rect_func(cr, x, y, width, height, 0.5);
+  renderer(cr, r, 0.5, render_data);
   cairo_restore(cr);
 }
 
-// mainly for debug purposes
-void draw_floor(cairo_t *cr, double w, double d, double h) {
+void draw_top(cairo_t* cr, box_model box, surface_renderer renderer, void* render_data) {
   cairo_matrix_t matrix;
   cairo_matrix_init(&matrix, 1, -tan_30, 0, 1, 0, 0);
 
+  rect r = {(box.depth - box.width) * sin_60, 0, box.width * sin_60, box.depth};
+
   cairo_save(cr);
-  cairo_set_source_grey(cr, 1);
+  cairo_translate(cr, 0, -box.height);
   cairo_rotate(cr, G_PI / 3);
   cairo_transform(cr, &matrix);
-  cairo_fill_rectangle(cr, (d - w) * sin_60, 0, w * sin_60, d);
+  renderer(cr, r, 0.8, render_data);
   cairo_restore(cr);
 }
 
-void draw_top(cairo_t *cr, double w, double d, double h) {
-  cairo_matrix_t matrix;
-  double x = (d - w) * sin_60;
-  double y = 0;
-  double width = w * sin_60;
-  double height = d;
-  cairo_matrix_init(&matrix, 1, -tan_30, 0, 1, 0, 0);
-
-  cairo_save(cr);
-  cairo_set_source_grey(cr, 0.8);
-  cairo_translate(cr, 0, -h);
-  cairo_rotate(cr, G_PI / 3);
-  cairo_transform(cr, &matrix);
-  rect_func(cr, x, y, width, height, 0.8);
-  cairo_restore(cr);
+void init_box(box_model* box, double x, double y, double z, double w, double d, double h) {
+  box->x      = x;
+  box->y      = y;
+  box->z      = z;
+  box->width  = w;
+  box->depth  = d;
+  box->height = h;
 }
 
-void draw_box(cairo_t *cr, double x, double y, double z, double width,
-              double depth, double height) {
-  /* rect_func = noise_rectangle; */
-  /* rect_func = flat; */
-  /* rect_func = hsv; */
+void position_box(box_model* box, double x, double y, double z) {
+  box->x = x;
+  box->y = y;
+  box->z = z;
+}
+
+void size_box(box_model* box, double w, double d, double h) {
+  box->width  = w;
+  box->depth  = d;
+  box->height = h;
+}
+
+void cube_box(box_model* box, double size) {
+  box->width  = size;
+  box->depth  = size;
+  box->height = size;
+}
+
+void draw_box(cairo_t* cr, box_model box, surface_renderer renderer, void* render_data) {
   cairo_save(cr);
   cairo_set_antialias(cr, CAIRO_ANTIALIAS_NONE);
-  cairo_translate(cr, (x - y) * sin_60 + (width - depth) * sin_60,
-                  (x + y) * cos_60 + (width - depth) * cos_60 - z);
-  /* draw_floor(cr, width, depth, height); */
-  draw_top(cr, width, depth, height);
-  draw_left(cr, width, depth, height);
-  draw_right(cr, width, depth, height);
+  cairo_translate(cr, (box.x - box.y) * sin_60 + (box.width - box.depth) * sin_60,
+                  (box.x + box.y) * cos_60 + (box.width - box.depth) * cos_60 - box.z);
+  draw_top(cr, box, renderer, render_data);
+  draw_left(cr, box, renderer, render_data);
+  draw_right(cr, box, renderer, render_data);
   cairo_restore(cr);
-}
-
-void draw_cube(cairo_t *cr, double x, double y, double z, double size) {
-  draw_box(cr, x * size, y * size, z * size, size, size, size);
 }
