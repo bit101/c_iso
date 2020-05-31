@@ -7,4 +7,6 @@ Uses [bitlib_c](https://github.com/bit101/bitlib_c) . This is included in the pr
 - imagemagick, ffmpeg for making gifs or videos.
 - eog, vlc for viewing files (or set up your own viewers).
 
-![demo.gif](demo/demo.gif)
+![demo.gif](demo/demo.png)
+
+[Animation](demo/demo.gif)
