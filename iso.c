@@ -37,10 +37,11 @@ void draw_left(cairo_t* cr, box_model box, surface_renderer renderer, void* rend
   cairo_matrix_t matrix;
   cairo_matrix_init(&matrix, 1, tan_30, 0, 1, 0, 0);
 
-  rect r = {-box.width * sin_60, box.depth - box.height, box.width * sin_60, box.height};
+  rect r = {0, box.depth - box.height, box.width * sin_60, box.height};
 
   cairo_save(cr);
   cairo_transform(cr, &matrix);
+  cairo_translate(cr, -box.width * sin_60, 0);
   renderer(cr, r, 0.2, render_data);
   cairo_restore(cr);
 }
